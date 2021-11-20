@@ -3,15 +3,15 @@ clc
 
 path = 'C:\\Users\\smaes\\OneDrive\\to_be_desktop\\columbia_masters\\2021_f\\dsp\\dsp_project\\';
 
-imgInfo = load(append(path, '150.mat'));
+imgInfo = load(append(path, '300.mat'));
 img = double(imgInfo.cjdata.image);
 img = (img - min(img(:))) ./ max(img(:));
 
 a = imgInfo.cjdata.tumorMask;
 b = a .* img;
 c = im2bw(img, 0.38);
-% figure(1)
-% imshow(binary(img, 125, 125, 0.35, 0.5))
+figure(1)
+imshow(binary(img, 125, 125, 0.35, 0.5))
 
 figure(2)
 imshow(img)
