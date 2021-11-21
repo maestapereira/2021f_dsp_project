@@ -1,6 +1,7 @@
 # Course Project Proposal
 Final project for DSP class (ELENE4810, Columbia University) Fall 2021<br>
-https://www.kaggle.com/sartajbhuvaji/brain-tumor-classification-mri
+No tumor data: https://www.kaggle.com/sartajbhuvaji/brain-tumor-classification-mri<br>
+Tumor data: refs
 
 **Names** (Uni)<br>
 * Advaith Biligeri Jagannath (ab5166)
