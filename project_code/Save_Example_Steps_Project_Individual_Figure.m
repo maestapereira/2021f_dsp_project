@@ -18,6 +18,7 @@ templateSize = size(template1);
 % PLOT ALGORITHM step 1
 figure(1);
 imshow(imgTemplate);
+title('Step 1');
 saveas(gcf, strcat(img_path, 'step1.jpg'))
 % PLOT ALGORITHM step 2
 figure(2);
@@ -25,6 +26,7 @@ subplot(1, 2, 1);
 imshow(template1);
 subplot(1, 2, 2);
 imshow(template2);
+title('Step 2');
 saveas(gcf, strcat(img_path, 'step2.jpg'))
 
 % Get image to detect tumor from - CHANGE THIS TO THE DESIRED IMAGE
@@ -33,12 +35,14 @@ img = double(imgInfo.cjdata.image);
 % PLOT ALGORITHM step 3
 figure(3);
 imshow(img);
+title('Step 3');
 saveas(gcf, strcat(img_path, 'step3.jpg'))
 
 img = (img - min(img(:))) ./ max(img(:));
 % PLOT ALGORITHM step 4
 figure(4);
 imshow(img);
+title('Step 4');
 saveas(gcf, strcat(img_path, 'step4.jpg'))
 
 % Find left and right eyes in image
@@ -49,6 +53,7 @@ C2 = normxcorr2(template2, img);
 % PLOT ALGORITHM step 5, example left eye
 figure(5);
 imshow(C1);
+title('Step 5');
 saveas(gcf, strcat(img_path, 'step5.jpg'))
 
 % Binarize image with low threshold to separate brain from background
@@ -56,6 +61,7 @@ imgBin = imbinarize(img, 0.1);
 % PLOT ALGORITHM step 6
 figure(6);
 imshow(imgBin);
+title('Step 6');
 saveas(gcf, strcat(img_path, 'step6.jpg'))
 
 % Fill holes from binarized image
@@ -63,6 +69,7 @@ imgBinFill = imfill(imgBin, 'holes');
 % PLOT ALGORITHM step 7
 figure(7);
 imshow(imgBinFill);
+title('Step 7');
 saveas(gcf, strcat(img_path, 'step7.jpg'))
 
 % Remove outer edge from binarized image, corresponds to removing skull
@@ -77,6 +84,7 @@ subplot(1, 2, 1);
 imshow(imgEroded);
 subplot(1, 2, 2);
 imshow(imgNoSkull);
+title('Step 8');
 saveas(gcf, strcat(img_path, 'step8.jpg'))
 
 % Remove eyes from image and low-pass filter
@@ -91,6 +99,7 @@ end
 % PLOT ALGORITHM step 9
 figure(9);
 imshow(imgNoSkull);
+title('Step 9');
 saveas(gcf, strcat(img_path, 'step9.jpg'))
 
 imgFiltered = imgaussfilt(imgNoSkull, 5);
@@ -103,6 +112,7 @@ imgFiltered = imfilter(imgFiltered, fspecial('average', 15));
 % PLOT step 10 2nd image
 subplot(1, 2, 2);
 imshow(imgFiltered);
+title('Step 10');
 saveas(gcf, strcat(img_path, 'step10.jpg'))
 
 % Find threshold for Otsu's method
@@ -113,18 +123,21 @@ imgThresholded = 10*imgFiltered.^6;
 % PLOT ALGORITHM step 12
 figure(12);
 imshow(imgThresholded);
+title('Step 12');
 saveas(gcf, strcat(img_path, 'step12.jpg'))
 
 imgThresholded = (imgThresholded - min(imgThresholded(:))) ./ max(imgThresholded(:));
 % PLOT ALGORITHM step 13
 figure(13);
 imshow(imgThresholded);
+title('Step 13');
 saveas(gcf, strcat(img_path, 'step13.jpg'))
 
 imgThresholded = imbinarize(imgThresholded, thresh);
 % PLOT ALGORITHM step 14
 figure(14);
 imshow(imgThresholded);
+title('Step 14');
 saveas(gcf, strcat(img_path, 'step14.jpg'))
 
 % Remove very large and very small components
@@ -139,6 +152,7 @@ end
 % PLOT ALGORITHM step 15
 figure(15);
 imshow(imgThresholded);
+title('Step 15');
 saveas(gcf, strcat(img_path, 'step15.jpg'))
 
 % Remove components with high standard deviation
@@ -153,6 +167,7 @@ end
 % PLOT ALGORITHM step 16
 figure(16);
 imshow(imgThresholded);
+title('Step 16');
 saveas(gcf, strcat(img_path, 'step16.jpg'))
 
 % Highlight tumors found and show figure
@@ -173,6 +188,7 @@ end
 % PLOT ALGORITHM step 17
 figure(17);
 imshow(imgThresholded);
+title('Step 17');
 saveas(gcf, strcat(img_path, 'step17.jpg'))
 
 imgTumorHighlited = img;
@@ -181,7 +197,22 @@ imgTumorHighlited(tumorBoundaries == 1) = 0;
 figure(18)
 imshow(cat(3, tumorBoundaries, zeros(size(img)), zeros(size(img))) + ...
     cat(3, imgTumorHighlited, imgTumorHighlited ,imgTumorHighlited))
+title('Detected Tumor Boundaries');
 saveas(gcf, strcat(img_path, 'step18.jpg'))
+
+
+% PLOT ORIGINAL TUMOR BOUNDARIES
+temp = abs(diff(imgInfo.cjdata.tumorMask));
+temp2 = zeros(size(img));
+temp2(2:end, :) = temp;
+
+originalTumorBoundsImg = img;
+originalTumorBoundsImg(temp2 == 1) = 0;
+figure(19)
+imshow(cat(3, temp2, zeros(size(img)), zeros(size(img))) + ...
+    cat(3, originalTumorBoundsImg, originalTumorBoundsImg ,originalTumorBoundsImg))
+title('Original Tumor Boundaries');
+saveas(gcf, strcat(img_path, 'original_bounds.jpg'))
 
 function [thresh] = OtsuThresh(img)
     [r, c] = size(img);
